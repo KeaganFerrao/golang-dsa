@@ -22,9 +22,13 @@ func main() {
 	// fmt.Printf("Ele is %v", ele)
 	// bt.DeleteRecursive(bt.Root, 9)
 	// bt.InOrderTraversal(bt.Root)
-	bt.Rebalance()
+	// bt.Rebalance()
 
-	bt.InOrderTraversal(bt.Root, func(n *binarytree.Node[int]) {
+	// bt.InOrderTraversal(bt.Root, func(n *binarytree.Node[int]) {
+	// 	fmt.Printf("n.Data: %v\n", n.Data)
+	// })
+
+	bt.MorrisInorderTraversal(func(n *binarytree.Node[int]) {
 		fmt.Printf("n.Data: %v\n", n.Data)
 	})
 }

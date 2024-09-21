@@ -1,6 +1,8 @@
 package tree
 
-import "cmp"
+import (
+	"cmp"
+)
 
 type binarySearchTree[T cmp.Ordered] struct {
 	Root *Node[T]
@@ -120,6 +122,7 @@ func (bst *binarySearchTree[T]) Size(root *Node[T]) int {
 	return 1 + bst.Size(root.Left) + bst.Size(root.Right)
 }
 
+// Leftmost node of the right subtree. Which node will come next in the inorder traversal
 func getInorderSuccessor[T cmp.Ordered](node *Node[T]) *Node[T] {
 	temp := node.Right
 	for temp != nil && temp.Left != nil {
@@ -189,5 +192,37 @@ func (bst *binarySearchTree[T]) Search(root *Node[T], key T) *Node[T] {
 		return bst.Search(root.Right, key)
 	} else {
 		return root
+	}
+}
+
+// Without the need for recursion stack to traverse the tree.
+// This modifies the tree while traversal but restores the original structure later
+// Space complexity O(1) as compared to classic inorder O(N) due to recursion stack
+// This can be used in systems where space is a concern. However it is not always
+// desirable in some systems to modify the tree structure
+func (bst *binarySearchTree[T]) MorrisInorderTraversal(cb func(*Node[T])) {
+	curr := bst.Root
+
+	for curr != nil {
+		if curr.Left == nil {
+			cb(curr)
+			curr = curr.Right
+		} else {
+			// Find the inorder predecessor.
+			// Node which comes before a node in an inorder traversal
+			predessor := curr.Left
+			for predessor.Right != nil && predessor.Right != curr {
+				predessor = predessor.Right
+			}
+
+			if predessor.Right == nil {
+				predessor.Right = curr
+				curr = curr.Left
+			} else {
+				predessor.Right = nil
+				cb(curr)
+				curr = curr.Right
+			}
+		}
 	}
 }
