@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	heap := heap.Heap{}
+	heap := heap.NewHeap[int]()
 
 	heap.Insert(11)
 	heap.Insert(-99)
@@ -16,6 +16,10 @@ func main() {
 	heap.Insert(9)
 	heap.Insert(56)
 	heap.Insert(6)
+
+	heap.UpdateAtIndex(1, -101)
+
+	heap.Insert(4)
 
 	fmt.Printf("heap: %v\n", heap)
 }
