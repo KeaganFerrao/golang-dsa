@@ -1,6 +1,8 @@
-package main
+package array
 
-func LinearSearch(a []int, key int) int {
+import "cmp"
+
+func LinearSearch[T cmp.Ordered](a []T, key T) int {
 	for i, v := range a {
 		if v == key {
 			return i
@@ -10,7 +12,7 @@ func LinearSearch(a []int, key int) int {
 	return -1
 }
 
-func BinarySearch(a []int, key int) int {
+func BinarySearch[T cmp.Ordered](a []T, key T) int {
 	start := 0
 	end := len(a) - 1
 
@@ -30,7 +32,7 @@ func BinarySearch(a []int, key int) int {
 	return -1
 }
 
-func BinarySearchRecursive(a []int, key int, start int, end int) int {
+func BinarySearchRecursive[T cmp.Ordered](a []T, key T, start int, end int) int {
 	for start <= end {
 		middle := (start + end) / 2
 		if key == a[middle] {
@@ -48,7 +50,7 @@ func BinarySearchRecursive(a []int, key int, start int, end int) int {
 }
 
 // 2 for loops, compare i and i - 1 elements and swap if i less than i - 1
-func InsertionSort(a []int) {
+func InsertionSort[T cmp.Ordered](a []T) {
 	for i := range a {
 		for j := i; j > 0; j-- {
 			if a[j] < a[j-1] {
@@ -64,7 +66,7 @@ func InsertionSort(a []int) {
 
 // Loop through the whole array and find the smallest element, then swap it
 // with the first element in the unsorted part of the array, continue the process
-func SelectionSort(a []int) {
+func SelectionSort[T cmp.Ordered](a []T) {
 	for i := 0; i < len(a); i++ {
 		smallestIndex := i
 		toSwapp := false
@@ -84,7 +86,7 @@ func SelectionSort(a []int) {
 
 // Compares adjacent elements and takes the largest element foward(Bubbles it up)
 // Can have more swaps as compared to selection sort
-func BubbleSort(a []int) {
+func BubbleSort[T cmp.Ordered](a []T) {
 	for i := len(a) - 1; i >= 0; i-- {
 		swapped := false
 		for j := 0; j < i; j++ {
@@ -101,13 +103,13 @@ func BubbleSort(a []int) {
 	}
 }
 
-func merge(a []int, left int, mid int, right int) {
+func merge[T cmp.Ordered](a []T, left int, mid int, right int) {
 	n1 := mid - left + 1 //length of left side
 	n2 := right - mid    //length of right side
 
 	//create arrays of specific lengths to hold the temp data for merging
-	l := make([]int, n1)
-	r := make([]int, n2)
+	l := make([]T, n1)
+	r := make([]T, n2)
 
 	//copy the left data into temp1
 	for i := 0; i < n1; i++ {
@@ -148,7 +150,7 @@ func merge(a []int, left int, mid int, right int) {
 	}
 }
 
-func MergeSort(a []int, left int, right int) {
+func MergeSort[T cmp.Ordered](a []T, left int, right int) {
 	if left >= right {
 		return
 	}
@@ -161,7 +163,7 @@ func MergeSort(a []int, left int, right int) {
 	merge(a, left, mid, right)
 }
 
-func partition(a []int, low int, high int) int {
+func partition[T cmp.Ordered](a []T, low int, high int) int {
 	pivot := a[high]
 
 	i := low - 1
@@ -181,11 +183,59 @@ func partition(a []int, low int, high int) int {
 	return i + 1
 }
 
-func QuickSort(a []int, low int, high int) {
+func QuickSort[T cmp.Ordered](a []T, low int, high int) {
 	if low < high {
 		pi := partition(a, low, high)
 
 		QuickSort(a, low, pi-1)
 		QuickSort(a, pi+1, high)
+	}
+}
+
+// Build a max heap
+// Time complexity: O(logN), since a heap represents a complete binary tree
+// so the heaight is always maintained at O(logN)
+func heapifyDown[T cmp.Ordered](arr []T, i int, lastIndex int) {
+	for {
+		leftChildIndex := 2*i + 1
+		rightChildIndex := 2*i + 2
+
+		maxIndex := i
+
+		if leftChildIndex <= lastIndex && arr[leftChildIndex] > arr[maxIndex] {
+			maxIndex = leftChildIndex
+		}
+
+		if rightChildIndex <= lastIndex && arr[rightChildIndex] > arr[maxIndex] {
+			maxIndex = rightChildIndex
+		}
+
+		if maxIndex == i {
+			break
+		}
+
+		arr[i], arr[maxIndex] = arr[maxIndex], arr[i]
+		i = maxIndex
+	}
+}
+
+// Time complexity: O(NlogN)
+// Space complexity: O(1)
+// O(logN) for heapifying and O(N) for looping throught the array
+// In place sorting, Not stable(Does not preserve initial order)
+func HeapSort[T cmp.Ordered](a []T) {
+	// Build the max heap, we start from n/2-1 since all the elements after
+	// this index are all leaf nodes of the tree and they are by default
+	// heapified, they do not require heapifyingDown
+	for i := len(a)/2 - 1; i >= 0; i-- {
+		heapifyDown(a, i, len(a)-1)
+	}
+
+	// Replace the root(max) node with the last element
+	// Heapify the unsorted part of the tree
+	// Do this untill the whole array is sorted
+	for i := len(a) - 1; i > 0; i-- {
+		a[0], a[i] = a[i], a[0]
+		heapifyDown(a, 0, i-1)
 	}
 }

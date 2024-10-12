@@ -2,24 +2,12 @@ package main
 
 import (
 	"fmt"
-	"practice/heap"
+	"practice/array"
 )
 
 func main() {
-	heap := heap.NewHeap[int]()
+	arr := []int{1, 5, 3, 6, 2, 4, 3, 7, 34, 78, 0, 35}
+	array.HeapSort(arr)
 
-	heap.Insert(11)
-	heap.Insert(-99)
-	heap.Insert(0)
-	heap.Insert(1)
-	heap.Insert(15)
-	heap.Insert(9)
-	heap.Insert(56)
-	heap.Insert(6)
-
-	heap.UpdateAtIndex(1, -101)
-
-	heap.Insert(4)
-
-	fmt.Printf("heap: %v\n", heap)
+	fmt.Printf("arr: %v\n", arr)
 }
