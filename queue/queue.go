@@ -20,10 +20,7 @@ func (q *queue[T]) Dequeue() (*T, error) {
 	}
 
 	element := q.items[0]
-
-	newSlice := make([]T, len(q.items)-1)
-	copy(newSlice, q.items[:len(q.items)-1])
-	q.items = newSlice
+	q.items = q.items[1:]
 
 	return &element, nil
 }
@@ -59,11 +56,4 @@ func (q *queue[T]) PrintQueue() {
 	for i, v := range q.items {
 		fmt.Printf("Item %v: %v\n", i, v)
 	}
-}
-
-func (q *queue[T]) AsSlice() []T {
-	newSlice := make([]T, len(q.items))
-	copy(newSlice, q.items)
-
-	return q.items
 }

@@ -24,11 +24,7 @@ func (s *stack[T]) Pop() (*T, error) {
 	}
 
 	poppedElement := s.items[len(s.items)-1]
-
-	newSlice := make([]T, len(s.items)-1)
-	copy(newSlice, s.items[:len(s.items)-1])
-
-	s.items = newSlice
+	s.items = s.items[:len(s.items)-1]
 
 	return &poppedElement, nil
 }
@@ -52,11 +48,4 @@ func (s *stack[T]) Clear() {
 		return
 	}
 	s.items = make([]T, 0)
-}
-
-func (s *stack[T]) AsSlice() []T {
-	newSlice := make([]T, len(s.items))
-	copy(newSlice, s.items)
-
-	return s.items
 }

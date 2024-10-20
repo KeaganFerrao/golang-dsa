@@ -1,13 +1,19 @@
 package main
 
 import (
+	"collections/graph"
 	"fmt"
-	"practice/array"
 )
 
 func main() {
-	arr := []int{1, 5, 3, 6, 2, 4, 3, 7, 34, 78, 0, 35}
-	array.HeapSort(arr)
+	g := graph.NewGraph[int]()
+	g.AddEdge(0, 1)
+	g.AddEdge(0, 2)
+	g.AddEdge(1, 3)
+	g.AddEdge(1, 4)
+	g.AddEdge(2, 4)
 
-	fmt.Printf("arr: %v\n", arr)
+	g.DFS(0, func(t int) {
+		fmt.Printf("t: %v\n", t)
+	})
 }
