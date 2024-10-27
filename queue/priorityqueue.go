@@ -19,7 +19,7 @@ func heapifyUp[T any](a []Item[T], i int) {
 	for i > 0 {
 		parent := (i - 1) / 2
 
-		if a[parent].Priority < a[i].Priority {
+		if a[parent].Priority > a[i].Priority {
 			a[parent], a[i] = a[i], a[parent]
 			i = parent
 		} else {
@@ -36,11 +36,11 @@ func heapifyDown[T any](a []Item[T], i int) {
 
 		index := i
 
-		if leftChildIndex <= lastIndex && a[leftChildIndex].Priority > a[index].Priority {
+		if leftChildIndex <= lastIndex && a[leftChildIndex].Priority < a[index].Priority {
 			index = leftChildIndex
 		}
 
-		if rightChildIndex <= lastIndex && a[rightChildIndex].Priority > a[index].Priority {
+		if rightChildIndex <= lastIndex && a[rightChildIndex].Priority < a[index].Priority {
 			index = rightChildIndex
 		}
 

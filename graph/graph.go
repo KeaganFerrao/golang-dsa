@@ -3,9 +3,10 @@ package graph
 import (
 	"collections/queue"
 	"collections/stack"
+	"log"
 )
 
-// Adjacency list representation
+// Adjacency list representation of an undirected graph
 type Graph[T comparable] struct {
 	vertices map[T][]T
 }
@@ -63,4 +64,40 @@ func (g *Graph[T]) DFS(start T, cb func(T)) {
 			}
 		}
 	}
+}
+
+// We do a DFS to check for cycles in a undirected graph
+func (g *Graph[T]) ContinsCycle(start T) bool {
+	visited := make(map[T]bool)
+	parent := make(map[T]*T)
+	stack := stack.NewStack[T]()
+
+	stack.Push(start)
+	parent[start] = nil
+
+	for stack.Length() > 0 {
+		elementRef, error := stack.Pop()
+		if error != nil {
+			log.Fatal(error)
+		}
+		element := *elementRef
+
+		if !visited[element] {
+			visited[element] = true
+		}
+
+		// Push all unvisited neighbors
+		for _, neighbor := range g.vertices[element] {
+			if !visited[neighbor] {
+				parent[neighbor] = &element
+				stack.Push(neighbor)
+			} else if parent[element] == nil || neighbor != *parent[element] {
+				// If the neighbor is visited and is not the parent of the current element,
+				// then we found a cycle
+				return true
+			}
+		}
+	}
+
+	return false
 }

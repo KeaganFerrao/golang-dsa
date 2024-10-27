@@ -7,13 +7,11 @@ import (
 
 func main() {
 	g := graph.NewGraph[int]()
-	g.AddEdge(0, 1)
-	g.AddEdge(0, 2)
-	g.AddEdge(1, 3)
-	g.AddEdge(1, 4)
-	g.AddEdge(2, 4)
+	g.AddEdge(1, 2)
+	g.AddEdge(2, 3)
+	g.AddEdge(3, 4)
+	g.AddEdge(2, 2)
 
-	g.DFS(0, func(t int) {
-		fmt.Printf("t: %v\n", t)
-	})
+	hasCycle := g.ContinsCycle(1)
+	fmt.Printf("hasCycle: %v\n", hasCycle)
 }
