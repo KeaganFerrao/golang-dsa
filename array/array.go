@@ -50,14 +50,24 @@ func BinarySearchRecursive[T cmp.Ordered](a []T, key T, start int, end int) int 
 }
 
 // 2 for loops, compare i and i - 1 elements and swap if i less than i - 1
+// It maintains two parts of the array, one sorted and unsorted
+// It takes the first element in the unsorted part and continuously
+// swaps with previous element until its in the right position
+// With each iteration the sorted part increases and unsorted decreases
+// Time complexity: O(N^2)
+// Space complexity: O(1)
+// Stable sorting algorithm
 func InsertionSort[T cmp.Ordered](a []T) {
 	for i := range a {
 		for j := i; j > 0; j-- {
 			if a[j] < a[j-1] {
+				// Swap
 				temp := a[j]
 				a[j] = a[j-1]
 				a[j-1] = temp
 			} else {
+				// If the first comparision is fine, that means we do not need
+				// to check the rest of the array since its the sorted portion
 				break
 			}
 		}
@@ -66,17 +76,18 @@ func InsertionSort[T cmp.Ordered](a []T) {
 
 // Loop through the whole array and find the smallest element, then swap it
 // with the first element in the unsorted part of the array, continue the process
+// Time complexity: O(N^2)
+// Spcae complexity: O(1)
+// Not a stable sorting algorithm
 func SelectionSort[T cmp.Ordered](a []T) {
 	for i := 0; i < len(a); i++ {
 		smallestIndex := i
-		toSwapp := false
 		for j := i; j < len(a); j++ {
 			if a[j] < a[smallestIndex] {
 				smallestIndex = j
-				toSwapp = true
 			}
 		}
-		if toSwapp {
+		if smallestIndex != i {
 			temp := a[i]
 			a[i] = a[smallestIndex]
 			a[smallestIndex] = temp
@@ -85,7 +96,11 @@ func SelectionSort[T cmp.Ordered](a []T) {
 }
 
 // Compares adjacent elements and takes the largest element foward(Bubbles it up)
+// In this we swap only adjacent elements
 // Can have more swaps as compared to selection sort
+// Time complexity: O(N^2)
+// Spcae complexity: O(1)
+// Stable sorting algorithm
 func BubbleSort[T cmp.Ordered](a []T) {
 	for i := len(a) - 1; i >= 0; i-- {
 		swapped := false
@@ -97,6 +112,9 @@ func BubbleSort[T cmp.Ordered](a []T) {
 				swapped = true
 			}
 		}
+
+		// If in any iteration we did not swap, that means the remaining array is already sorted
+		// so we can return
 		if !swapped {
 			return
 		}
@@ -150,6 +168,11 @@ func merge[T cmp.Ordered](a []T, left int, mid int, right int) {
 	}
 }
 
+// This is a divide and conquer algorithm
+// Time complexity: O(NLogN), since we continuously divide the array into halves which takes
+// O(logN) and then the merge step takes O(N), so total O(NlogN)
+// Space complexity: O(N), due to the temp arrays needed while merging
+// Stable sorting algorithm
 func MergeSort[T cmp.Ordered](a []T, left int, right int) {
 	if left >= right {
 		return
@@ -163,11 +186,18 @@ func MergeSort[T cmp.Ordered](a []T, left int, right int) {
 	merge(a, left, mid, right)
 }
 
+// A pivot is chosen at random (It can be highest, lowest, median or random element)
+// All elements less that the pivot are on one end and greater than the pivot are on
+// another end. Then the pivot is placed in its proper position
+// This is done continuously for each half
 func partition[T cmp.Ordered](a []T, low int, high int) int {
+	// select a pivot, last element in this case
 	pivot := a[high]
 
 	i := low - 1
 	for j := low; j < high; j++ {
+		// From low to high, arrange all elements less than the pivot to the start and
+		// greater than the pivot to the end
 		if a[j] < pivot {
 			i++
 			temp := a[i]
@@ -176,17 +206,35 @@ func partition[T cmp.Ordered](a []T, low int, high int) int {
 		}
 	}
 
+	// Move the pivot to its right position, by swaping the first greater element with the
+	// higher index which was chosen as the pivot
 	temp := a[i+1]
 	a[i+1] = a[high]
 	a[high] = temp
 
+	// return the pivot index
 	return i + 1
 }
 
+// This is a divide and conquer algorithm
+// Time complexity: Average O(NlogN), Worst: O(N^2)
+// Since the partition operations takes O(N), since each element is compared to the pivot and
+// placed in its right position
+// Since the array is continuosuly divided into half, there are about logN levels
+// If the choice of the pivot is not good, i.e. we always end up choosing the greatest/least
+// element, then we would not end up getting two halves of the data, instead we would get
+// always only 1 side. This would result in O(N) levels instead of O(logN)
+// Making the worst case complexity as O(N^2)
+// Hence the time complexity is O(NLogN)
+// Space Complexity: O(N), due to the recursion stack, which can be made O(1) if we use an iterative approach
+// Not a stable sorting algorithm
 func QuickSort[T cmp.Ordered](a []T, low int, high int) {
 	if low < high {
+		// pi is the pivot position
+		// After calling partition, the pivot element is in its right position in the list
 		pi := partition(a, low, high)
 
+		// Then call quicksort recursively for the remaining two unsorted halves
 		QuickSort(a, low, pi-1)
 		QuickSort(a, pi+1, high)
 	}
