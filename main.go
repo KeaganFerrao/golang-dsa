@@ -1,7 +1,7 @@
 package main
 
 import (
-	"collections/graph"
+	"github.com/KeaganFerrao/golang-dsa/graph"
 	"fmt"
 )
 

@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"collections/queue"
-	"collections/stack"
+	"github.com/KeaganFerrao/golang-dsa/queue"
+	"github.com/KeaganFerrao/golang-dsa/stack"
 	"log"
 )
 

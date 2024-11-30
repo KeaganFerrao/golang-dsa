@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"collections/queue"
+	"github.com/KeaganFerrao/golang-dsa/queue"
 	"log"
 )
 
